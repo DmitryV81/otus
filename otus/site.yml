@@ -1,0 +1,17 @@
+---
+#- name: Install WordPress, MariaDB, Nginx, and PHP-FPM
+#  hosts: WebServer
+#  remote_user: root
+
+#  roles:
+    #- common
+    #- mariadb
+#    - nginx
+    #- php-fpm
+    #- wordpress
+
+- name: Install MySQL
+  hosts: MySQLMaster MySQLSlave
+  remote_user: root
+  roles:
+    - mysql

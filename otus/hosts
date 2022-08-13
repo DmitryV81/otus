@@ -1,0 +1,5 @@
+[wordpress-server]
+WebServer
+[mysql-server]
+MySQLMaster
+MySQLSlave

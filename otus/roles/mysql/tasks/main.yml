@@ -1,0 +1,71 @@
+---
+# This playbook will install MySQL and create db user and give permissions.
+#- name: Install epel-release
+#  yum:
+#    name: epel-release
+#    state: latest 
+
+- name: Download sources MySQL
+  get_url:
+    url: https://repo.mysql.com/mysql80-community-release-el7-6.noarch.rpm
+    dest: /tmp/mysql80-community-release-el7-6.noarch.rpm
+
+- name: Get GPG key
+  command: rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
+#    dest: /etc/pki/rpm-gpg
+
+- name: Install package
+  yum:
+    name: /tmp/mysql80-community-release-el7-6.noarch.rpm
+    disable_gpg_check: 0
+    state: present
+
+- name: Install MySQL package
+  yum:
+    name: "{{ item }}"
+    state: installed
+  loop:
+    - mysql-community-server
+    - MySQL-python
+#    - libselinux-python
+#    - libsemanage-python
+
+#- name: Configure SELinux to start mysql on any port
+#  seboolean: name=mysql_connect_any state=true persistent=yes
+
+- name: Create Mysql configuration file
+  template:
+    src: my.cnf.j2
+    dest: /etc/my.cnf
+  notify:
+  - restart mysqld
+
+- name: Start MySQL Service
+  service:
+    name: mysqld
+    state: started
+    enabled: yes
+
+#- name: conf reset pass
+#  mysql_user:
+#    login_user: root
+#    login_password: ''
+#    name: root
+#    host_all: yes
+#    password: hunter1981
+
+#- name: Create Application Database
+#  mysql_db:
+#    name: wordpress
+#    state: present
+#    login_unix_socket: /var/lib/mysql/mysql.sock
+
+#- name: Create Application DB User
+#  mysql_user:
+#    name: wordpress
+#    password: hunter1981
+#    priv: '*.*:ALL'
+#    login_host: 127.0.0.1
+#    state: present
+
+...
